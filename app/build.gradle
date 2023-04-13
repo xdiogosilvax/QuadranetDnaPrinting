@@ -1,0 +1,57 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.example.myapplication'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.example.myapplication"
+        minSdk 26
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+        ndk{
+            abiFilters 'armeabi'
+        }
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+        packagingOptions {
+            exclude 'META-INF/NOTICE.md'
+            exclude 'org/eclipse/jetty/http/encoding.properties'
+            exclude 'META-INF/LICENSE.md'
+        }
+
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+    implementation files('libs/NeptuneLiteApi_V3.32.00_20221216.jar')
+    implementation("io.javalin:javalin:5.4.2")
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
