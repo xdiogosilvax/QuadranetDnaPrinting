@@ -1,8 +1,10 @@
 package com.example.myapplication;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
@@ -17,7 +19,11 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
+import com.example.myapplication.retrofit.DNAPedAPI;
+import com.example.myapplication.retrofit.DNAPedResult;
+import com.example.myapplication.retrofit.RetroFitClient;
 import com.example.myapplication.service.DnaService;
 import com.example.myapplication.service.IDnaService;
 import com.pax.dal.IDAL;
@@ -33,55 +39,116 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends Activity {
 
     private IDnaService _dnaService; //service to call epos
-
+    private DNAPedAPI  _dnaAPI;
     private static IDAL dal;
+    private String clientGuid;
     private WebView mywebView;
-   // static{
-   //     System.loadLibrary("DeviceConfig");
-   // }
+    private String serialNumber;
+    private String ipAddress;
+    private boolean _dbxloaded;
+
     protected void onCreate(Bundle savedInstanceState) {
-
-
-        String serialNumber = getSerialNumber();
-        String ipAddress =getIPAddress();
+        _dbxloaded=false;
+        serialNumber = getSerialNumber();
+        ipAddress =getIPAddress();
+        //DNAPedResult test= (DNAPedResult) _dnaAPI.getPedURL(serialNumber);
 
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-         //String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
+        if(clientGuid== null){
+            GetPedDetails(serialNumber);
+        }
+    }
 
-        tryPrinter();
+    private void loadWEbViewer(){
         try{
-        mywebView=(WebView) findViewById(R.id.webview);
- 
-        WebSettings webSettings=mywebView.getSettings();
 
-       webSettings.setJavaScriptEnabled(true);
-       webSettings.setAllowContentAccess(true);
-        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setLoadWithOverviewMode(true);
-        webSettings.setUseWideViewPort(true);
-        webSettings.setBuiltInZoomControls(true);
-        webSettings.setDisplayZoomControls(false);
-        webSettings.setSupportZoom(true);
-        webSettings.setDefaultTextEncodingName("utf-8");
+            if(_dbxloaded){
+                return;
+            }
+
+            mywebView=(WebView) findViewById(R.id.webview);
+
+            WebSettings webSettings=mywebView.getSettings();
+
+            webSettings.setJavaScriptEnabled(true);
+            webSettings.setAllowContentAccess(true);
+            webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+            webSettings.setDomStorageEnabled(true);
+            webSettings.setLoadWithOverviewMode(true);
+            webSettings.setUseWideViewPort(true);
+            webSettings.setBuiltInZoomControls(true);
+            webSettings.setDisplayZoomControls(false);
+            webSettings.setSupportZoom(true);
+            webSettings.setDefaultTextEncodingName("utf-8");
             mywebView.setWebViewClient(new WebViewClient() {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
                     return false;
                 }
             });
-        mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/1875AF6E-4E1D-49B2-819C-32837D15FAF3/P/"+ipAddress+"/"+serialNumber);
+
+            mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            if(clientGuid!=null){
+                _dbxloaded=true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Toast.makeText(getApplicationContext(), "An error has occured", Toast.LENGTH_LONG).show();
 
         }
-        catch (Exception ex){}
     }
 
+    private void GetPedDetails(String serialNumber) {
+        if(clientGuid!=null) {
+            return;
+        }
+             Call<DNAPedResult> call = RetroFitClient.getInstance().getMyApi().getPedURL(serialNumber);
+        call.enqueue(new Callback<DNAPedResult>() {
+            @Override
+            public void onResponse(Call<DNAPedResult> call, Response<DNAPedResult> response) {
+                DNAPedResult PedDetails = response.body();
+                if(PedDetails.success){
+                    clientGuid=PedDetails.url;
+                    loadWEbViewer();
+                }
+                else
+                {
+                 showError();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<DNAPedResult> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "An error has occured", Toast.LENGTH_LONG).show();
+            }
+
+        });
+    }
+    private void showError()
+    {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Please contact Quadranet Systems to set up your device");
+        builder.setMessage(
+                "Phone Number: 01494 473 337 OPT 1\n" +
+                "Email : support@quadranet.co.uk\n" +
+                "Device Serial Number:"+serialNumber);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
     public IDAL getDal() {
         if(dal == null){ //dal is a private static IDAL variable of the application
             try {
@@ -90,7 +157,6 @@ public class MainActivity extends Activity {
         }
         return dal;
     }
-
     private void tryPrinter()
     {
         try {

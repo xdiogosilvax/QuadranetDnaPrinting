@@ -17,7 +17,6 @@ import com.example.myapplication.R;
 import com.example.myapplication.retrofit.DNARetrofit;
 import com.example.myapplication.retrofit.EposResult;
 import com.example.myapplication.retrofit.ServiceGenerator;
-import com.pax.dal.IDAL;
 import com.pax.dal.IPrinter;
 import com.pax.dal.entity.EFontTypeAscii;
 import com.pax.dal.entity.EFontTypeExtCode;
@@ -27,7 +26,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DnaService extends Service implements IDnaService, Runnable
 {
@@ -225,4 +227,42 @@ public class DnaService extends Service implements IDnaService, Runnable
             _printer = null;
         }
     }
+
+    public Call<PedConnection> getPedConnection(String serialNumber) {
+        // Create a Retrofit instance
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://localhost:44391/API/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        // Create an instance of the DnaService interface
+        DnaService dnaService = retrofit.create(DnaService.class);
+
+        // Call the method on the DnaService interface
+        Call<PedConnection> call = dnaService.getPedConnection(serialNumber);
+
+        // Execute the request asynchronously
+        call.enqueue(new Callback<PedConnection>() {
+            @Override
+            public void onResponse(Call<PedConnection> call, Response<PedConnection> response) {
+                if (response.isSuccessful()) {
+                    // Handle successful response
+                    PedConnection pedConnection = response.body();
+                    // Do something with the PedConnection object
+                } else {
+                    // Handle error response
+                    // You can use response.errorBody() to get the error message
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PedConnection> call, Throwable t) {
+                // Handle network error
+            }
+        });
+        return call;
+    }
+
+
+
 }
