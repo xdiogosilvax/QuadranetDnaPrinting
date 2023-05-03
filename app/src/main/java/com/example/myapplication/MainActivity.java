@@ -9,16 +9,22 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.format.Formatter;
+import android.text.style.StyleSpan;
 import android.util.Printer;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.myapplication.retrofit.DNAPedAPI;
@@ -32,6 +38,7 @@ import com.pax.dal.entity.EFontTypeAscii;
 import com.pax.dal.entity.EFontTypeExtCode;
 import com.pax.dal.exceptions.PrinterDevException;
 import com.pax.neptunelite.api.NeptuneLiteUser;
+//import com.quadranet.dbx.R;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -137,15 +144,45 @@ public class MainActivity extends Activity {
     }
     private void showError()
     {
-
+        ImageView image = new ImageView(this);
+        //image.setImageResource(R.drawable.hellodiogo);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Please contact Quadranet Systems to set up your device");
-        builder.setMessage(
-                "Phone Number: 01494 473 337 OPT 1\n" +
-                "Email : support@quadranet.co.uk\n" +
-                "Device Serial Number:"+serialNumber);
+        builder.setIcon(R.drawable.hellodiogo);
+
+        builder.setTitle("Please contact Quadranet Systems");
+
+        SpannableStringBuilder sbuilder = new SpannableStringBuilder();
+        SpannableString phoneSpan = new SpannableString("Your device requires to be set up\n\n");
+        phoneSpan.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, phoneSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sbuilder.append(phoneSpan);
+        SpannableString aSpan = new SpannableString("Phone No: 01494 473 337 OPT 1\n");
+        aSpan.setSpan(new StyleSpan(Typeface.NORMAL), 0, aSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sbuilder.append(aSpan);
+
+        SpannableString bSpan = new SpannableString("Email : support@quadranet.co.uk\n");
+        bSpan.setSpan(new StyleSpan(Typeface.NORMAL), 0, bSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sbuilder.append(bSpan);
+
+        SpannableString cSpan = new SpannableString("PED Serial Number: "+serialNumber+" \n");
+        cSpan.setSpan(new StyleSpan(Typeface.NORMAL), 0, cSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sbuilder.append(cSpan);
+
+        //sbuilder.append(message.substring("Your device requires to be set u".length()));
+
+        sbuilder.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, phoneSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sbuilder.setSpan(new StyleSpan(Typeface.NORMAL), 0, aSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sbuilder.setSpan(new StyleSpan(Typeface.NORMAL), 0, bSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sbuilder.setSpan(new StyleSpan(Typeface.NORMAL), 0, cSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setMessage(sbuilder);
+        builder.setView(image);
+        builder.setNeutralButton("Try Again", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dlg, int sumthin) {
+                GetPedDetails(serialNumber);
+            }
+        });
 
         AlertDialog dialog = builder.create();
+
         dialog.show();
 
     }

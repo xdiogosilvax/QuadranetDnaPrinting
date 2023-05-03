@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.myapplication.MainActivity;
+
 import com.example.myapplication.R;
 import com.example.myapplication.retrofit.DNARetrofit;
 import com.example.myapplication.retrofit.EposResult;
@@ -21,6 +22,7 @@ import com.pax.dal.IPrinter;
 import com.pax.dal.entity.EFontTypeAscii;
 import com.pax.dal.entity.EFontTypeExtCode;
 import com.pax.neptunelite.api.NeptuneLiteUser;
+//import com.quadranet.dbx.R;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
