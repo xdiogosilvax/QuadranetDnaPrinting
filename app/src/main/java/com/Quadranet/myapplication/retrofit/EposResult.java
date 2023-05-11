@@ -1,4 +1,4 @@
-package com.example.myapplication.retrofit;
+package com.Quadranet.myapplication.retrofit;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

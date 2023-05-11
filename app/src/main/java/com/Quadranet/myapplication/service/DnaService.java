@@ -1,4 +1,4 @@
-package com.example.myapplication.service;
+package com.Quadranet.myapplication.service;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,16 +12,17 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.myapplication.MainActivity;
+import com.Quadranet.myapplication.MainActivity;
 
-import com.example.myapplication.R;
-import com.example.myapplication.retrofit.DNARetrofit;
-import com.example.myapplication.retrofit.EposResult;
-import com.example.myapplication.retrofit.ServiceGenerator;
+//import com.Quadranet.myapplication;
+import com.Quadranet.myapplication.retrofit.DNARetrofit;
+import com.Quadranet.myapplication.retrofit.EposResult;
+import com.Quadranet.myapplication.retrofit.ServiceGenerator;
 import com.pax.dal.IPrinter;
 import com.pax.dal.entity.EFontTypeAscii;
 import com.pax.dal.entity.EFontTypeExtCode;
 import com.pax.neptunelite.api.NeptuneLiteUser;
+import com.quadranet.R;
 //import com.quadranet.dbx.R;
 
 import java.time.LocalDateTime;

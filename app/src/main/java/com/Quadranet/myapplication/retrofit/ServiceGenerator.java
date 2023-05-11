@@ -1,4 +1,4 @@
-package com.example.myapplication.retrofit;
+package com.Quadranet.myapplication.retrofit;
 
 import java.security.cert.CertificateException;
 
@@ -12,7 +12,6 @@ import javax.net.ssl.X509TrustManager;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 public class ServiceGenerator {
 

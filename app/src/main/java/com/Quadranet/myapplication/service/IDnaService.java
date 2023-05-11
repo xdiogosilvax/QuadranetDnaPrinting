@@ -1,6 +1,4 @@
-package com.example.myapplication.service;
-
-import retrofit2.Call;
+package com.Quadranet.myapplication.service;
 
 public interface IDnaService {
     void someMethodFromService();

@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.Quadranet.myapplication;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,37 +7,33 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.format.Formatter;
 import android.text.style.StyleSpan;
-import android.util.Printer;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.myapplication.retrofit.DNAPedAPI;
-import com.example.myapplication.retrofit.DNAPedResult;
-import com.example.myapplication.retrofit.RetroFitClient;
-import com.example.myapplication.service.DnaService;
-import com.example.myapplication.service.IDnaService;
+import com.Quadranet.myapplication.retrofit.DNAPedAPI;
+import com.Quadranet.myapplication.retrofit.DNAPedResult;
+import com.Quadranet.myapplication.retrofit.RetroFitClient;
+import com.Quadranet.myapplication.service.DnaService;
+import com.Quadranet.myapplication.service.IDnaService;
+//import com.example.myapplication.R;
 import com.pax.dal.IDAL;
 import com.pax.dal.IPrinter;
 import com.pax.dal.entity.EFontTypeAscii;
 import com.pax.dal.entity.EFontTypeExtCode;
 import com.pax.dal.exceptions.PrinterDevException;
 import com.pax.neptunelite.api.NeptuneLiteUser;
+import com.quadranet.R;
 //import com.quadranet.dbx.R;
 
 import java.net.InetAddress;
@@ -70,6 +66,10 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ///clientGuid="1875AF6E-4E1D-49B2-819C-32837D15FAF3";
+
+        //loadWEbViewer();
+
         if(clientGuid== null){
             GetPedDetails(serialNumber);
         }
@@ -116,6 +116,10 @@ public class MainActivity extends Activity {
     }
 
     private void GetPedDetails(String serialNumber) {
+        try
+        {
+
+
         if(clientGuid!=null) {
             return;
         }
@@ -141,6 +145,11 @@ public class MainActivity extends Activity {
             }
 
         });
+        }
+        catch (Exception ex) {
+            Toast.makeText(getApplicationContext(), "Fatal calling API", Toast.LENGTH_LONG).show();
+
+        }
     }
     private void showError()
     {
@@ -182,7 +191,7 @@ public class MainActivity extends Activity {
         });
 
         AlertDialog dialog = builder.create();
-
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
     }

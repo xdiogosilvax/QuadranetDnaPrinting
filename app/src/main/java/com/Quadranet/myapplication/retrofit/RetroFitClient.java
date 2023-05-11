@@ -1,4 +1,4 @@
-package com.example.myapplication.retrofit;
+package com.Quadranet.myapplication.retrofit;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

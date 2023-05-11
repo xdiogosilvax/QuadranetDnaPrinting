@@ -3,11 +3,13 @@ plugins {
 }
 
 android {
-    namespace 'com.example.myapplication'
+
+
+    namespace 'com.quadranet'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.myapplication"
+        applicationId "com.quadranet"
         minSdk 26
         targetSdk 33
         versionCode 1
@@ -36,9 +38,11 @@ android {
     }
     buildTypes {
         release {
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
