@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class EposResult
 {
-    @SerializedName("Foo1")
+    @SerializedName("bill_data")
     @Expose
-    public String foo1;
-    @SerializedName("Foo2")
+    public String DataStr;
+    @SerializedName("error_message")
     @Expose
-    public String foo2;
+    public String error_message;
 }

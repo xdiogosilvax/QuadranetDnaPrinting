@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -37,12 +38,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DnaService extends Service implements IDnaService, Runnable
 {
     private static final String TAG = DnaService.class.getSimpleName();
-    private static final int CHECK_INTERVAL = 10000;
+    private static final int CHECK_INTERVAL = 2000;
     private static final int NOTIFICATION_ID = 3254;
     private NotificationManager _notificationManager;
+    private String _pedSN;
     DNARetrofit _retroService = ServiceGenerator.createService(DNARetrofit.class);
     private Thread _thread;
     private boolean _stopThread;
+    private boolean _isRunning;
 
     //printer stuff
     IPrinter _printer = null;
@@ -64,10 +67,10 @@ public class DnaService extends Service implements IDnaService, Runnable
     @Override
     public void onCreate() {
         super.onCreate();
-
+        _pedSN=getSerialNumber();
         _notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         startForeground(NOTIFICATION_ID, createNotification());
-        //preparePrinter(); //I don't have a printer, so I commented this out
+        preparePrinter(); //I don't have a printer, so I commented this out
         startThread();
     }
 
@@ -120,7 +123,9 @@ public class DnaService extends Service implements IDnaService, Runnable
         {
             while (_stopThread != true)
             {
+                if(_isRunning) return;
                 doJob();
+                _isRunning=false;
                 wait(CHECK_INTERVAL);
             }
         }
@@ -162,35 +167,38 @@ public class DnaService extends Service implements IDnaService, Runnable
     /*
         called every CHECK_INTERVAL ms
      */
-    private void doJob()
-    {
-        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-        Log.d(TAG, "start doJob:" + time);
+    private void doJob() {
 
-        Call<EposResult> call = _retroService.callEpos();
-
-        try
-        {
-            Response<EposResult> response = call.execute();
-
-            EposResult result = response.body();
-
-            if (result != null)
-            {
-                sendToPrinter(result);
-            }
-            else
-            {
-                Log.d(TAG, "doJob response is null");
-            }
-
-            //http 400 error // request url is in ServiceGenerator.API_BASE_URL
-            Log.d(TAG, "doJob response: " + response.toString());
-        }
-        catch (Exception e)
-        {
-            Log.d(TAG, "doJob exception: " + e.getMessage());
-        }
+//        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+//        Log.d(TAG, "start doJob:" + time);
+//        _isRunning=true;
+//
+//        Call<EposResult> call = _retroService.callEpos(_pedSN);
+//        try
+//        {
+//            Response<EposResult> response = call.execute();
+//
+//            EposResult result = response.body();
+//
+//            if (result != null)
+//            {
+//                Log.d(TAG, "doJob-result: "+result.DataStr);
+//                sendToPrinter(result);
+//                result=null;
+//            }
+//            else
+//            {
+//                Log.d(TAG, "doJob response is null");
+//            }
+//
+//            //http 400 error // request url is in ServiceGenerator.API_BASE_URL
+//            Log.d(TAG, "doJob response: " + response.toString());
+//        }
+//        catch (Exception e)
+//        {
+//            Log.d(TAG, "doJob exception: " + e.getMessage());
+//        }
+//    }
     }
 
     private void sendToPrinter(EposResult result)
@@ -198,14 +206,31 @@ public class DnaService extends Service implements IDnaService, Runnable
         if (_printer != null)
         {
             try {
-                _printer.printStr(result.foo1, null);
-                _printer.printStr(result.foo2, null);
+                if(result!=null) {
+                    Log.d(TAG, "sendToPrinter:"+result.DataStr);
+                    //preparePrinter();
+                    _printer.init();
+                    EFontTypeAscii asciiFontType = EFontTypeAscii.FONT_16_32;
+                    EFontTypeExtCode fontTypeExtCode = EFontTypeExtCode.FONT_24_24;
+                    _printer.fontSet(asciiFontType, fontTypeExtCode);
+
+                    String printFIle= result.DataStr.replace("/n","\n");
+                    String printFIle2= printFIle.replace("\r"," ");
+                    _printer.printStr(printFIle2+"\n"+"\n"+"\n"+"\n", null);
+                    _printer.start();
+
+                    _isRunning=false;
+
+                }
             }
             catch (Exception e)
             {
                 Log.d(TAG, "sendToPrinter exception: " + e.getMessage());
             }
         }
+    }
+    public static String getSerialNumber() {
+        return Build.SERIAL;
     }
 
     private void preparePrinter()
@@ -220,7 +245,7 @@ public class DnaService extends Service implements IDnaService, Runnable
             }
 
             _printer.init();
-            EFontTypeAscii asciiFontType = EFontTypeAscii.FONT_12_24;
+            EFontTypeAscii asciiFontType = EFontTypeAscii.FONT_16_32;
             EFontTypeExtCode fontTypeExtCode = EFontTypeExtCode.FONT_24_24;
             _printer.fontSet(asciiFontType, fontTypeExtCode);
         }
@@ -234,7 +259,7 @@ public class DnaService extends Service implements IDnaService, Runnable
     public Call<PedConnection> getPedConnection(String serialNumber) {
         // Create a Retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://localhost:44391/API/")
+                .baseUrl("https://dbxqa3.quadranet.co.uk/Interfaces/API/DNAPayments/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

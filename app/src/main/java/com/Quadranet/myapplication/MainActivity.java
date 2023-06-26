@@ -15,6 +15,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -61,14 +62,12 @@ public class MainActivity extends Activity {
         _dbxloaded=false;
         serialNumber = getSerialNumber();
         ipAddress =getIPAddress();
-        //DNAPedResult test= (DNAPedResult) _dnaAPI.getPedURL(serialNumber);
 
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ///clientGuid="1875AF6E-4E1D-49B2-819C-32837D15FAF3";
 
-        //loadWEbViewer();
+        //tryPrinter();
 
         if(clientGuid== null){
             GetPedDetails(serialNumber);
@@ -85,7 +84,7 @@ public class MainActivity extends Activity {
             mywebView=(WebView) findViewById(R.id.webview);
 
             WebSettings webSettings=mywebView.getSettings();
-
+            Log.d("WebViewer","GotIN");
             webSettings.setJavaScriptEnabled(true);
             webSettings.setAllowContentAccess(true);
             webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
@@ -96,14 +95,20 @@ public class MainActivity extends Activity {
             webSettings.setDisplayZoomControls(false);
             webSettings.setSupportZoom(true);
             webSettings.setDefaultTextEncodingName("utf-8");
+            Log.d("WebViewer","Finihs Adding Settings");
+
             mywebView.setWebViewClient(new WebViewClient() {
+
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    Log.d("WebViewer","Not created ");
+
                     return false;
                 }
             });
+            Log.d("WebViewer","loading dbx ");
 
-            mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
             if(clientGuid!=null){
                 _dbxloaded=true;
             }
@@ -118,13 +123,11 @@ public class MainActivity extends Activity {
     private void GetPedDetails(String serialNumber) {
         try
         {
-
-
-        if(clientGuid!=null) {
-            return;
-        }
-             Call<DNAPedResult> call = RetroFitClient.getInstance().getMyApi().getPedURL(serialNumber);
-        call.enqueue(new Callback<DNAPedResult>() {
+            if(clientGuid!=null) {
+                return;
+            }
+            Call<DNAPedResult> call = RetroFitClient.getInstance().getMyApi().getPedURL(serialNumber);
+            call.enqueue(new Callback<DNAPedResult>() {
             @Override
             public void onResponse(Call<DNAPedResult> call, Response<DNAPedResult> response) {
                 DNAPedResult PedDetails = response.body();
@@ -146,7 +149,8 @@ public class MainActivity extends Activity {
 
         });
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             Toast.makeText(getApplicationContext(), "Fatal calling API", Toast.LENGTH_LONG).show();
 
         }
@@ -186,7 +190,7 @@ public class MainActivity extends Activity {
         builder.setView(image);
         builder.setNeutralButton("Try Again", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dlg, int sumthin) {
-                GetPedDetails(serialNumber);
+                //GetPedDetails(serialNumber);
             }
         });
 
@@ -208,77 +212,13 @@ public class MainActivity extends Activity {
         try {
             IPrinter printer= getDal().getPrinter();
 
-
-
             printer.init();
-            EFontTypeAscii asciiFontType = EFontTypeAscii.FONT_12_24;
+            EFontTypeAscii asciiFontType = EFontTypeAscii.FONT_16_32;
             EFontTypeExtCode fontTypeExtCode = EFontTypeExtCode.FONT_24_24;
             printer.fontSet(asciiFontType, fontTypeExtCode);
 
-            printer.leftIndent(10);
 
-            // continue printing...
-            // Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.hellodiogo);
-            byte wordSpace = 2;
-            byte lineSpace = 30;
 
-            printer.getDotLine();
-
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("Diogo's Bistro \n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("Address123\n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("HP11 1AW\n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("Tel:123456789\n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("test@quadranet.co.uk\n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("**************************\n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("1x   Beer     £01.00\n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("1x   Wine     £100.00\n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("2x   Food     £100.00\n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("2x ItemTotal  £201.00\n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("VAT(20%)      %30.12\n",null);
-            printer.leftIndent(10);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.printStr("**************************\n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            LocalDateTime now = LocalDateTime.now();
-            printer.printStr(now +"\n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("Table: Terrace  \n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("Server: Diogo  \n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("OrderNo: 123424243  \n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            printer.printStr("VAT No.: 098978765567  \n",null);
-            printer.spaceSet(wordSpace, lineSpace);
-            printer.leftIndent(10);
-            //printer.printBitmap(bitmap);
             printer.start();
         } catch (PrinterDevException e) {
             e.printStackTrace();
