@@ -169,44 +169,44 @@ public class DnaService extends Service implements IDnaService, Runnable
      */
     private void doJob() {
 
-//        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-//        Log.d(TAG, "start doJob:" + time);
-//        _isRunning=true;
-//
-//        Call<EposResult> call = _retroService.callEpos(_pedSN);
-//        try
-//        {
-//            Response<EposResult> response = call.execute();
-//
-//            EposResult result = response.body();
-//
-//            if (result != null)
-//            {
-//                Log.d(TAG, "doJob-result: "+result.DataStr);
-//                sendToPrinter(result);
-//                result=null;
-//            }
-//            else
-//            {
-//                Log.d(TAG, "doJob response is null");
-//            }
-//
-//            //http 400 error // request url is in ServiceGenerator.API_BASE_URL
-//            Log.d(TAG, "doJob response: " + response.toString());
-//        }
-//        catch (Exception e)
-//        {
-//            Log.d(TAG, "doJob exception: " + e.getMessage());
-//        }
-//    }
+        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        Log.d(TAG, "start doJob:" + time);
+        _isRunning=true;
+
+        Call<EposResult> call = _retroService.callEpos(_pedSN);
+        try
+        {
+            Response<EposResult> response = call.execute();
+
+            EposResult result = response.body();
+
+            if (result != null)
+            {
+                Log.d(TAG, "doJob-result: "+result.DataStr);
+                sendToPrinter(result);
+                result=null;
+            }
+            else
+            {
+                Log.d(TAG, "doJob response is null");
+            }
+
+            //http 400 error // request url is in ServiceGenerator.API_BASE_URL
+            Log.d(TAG, "doJob response: " + response.toString());
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG, "doJob exception: " + e.getMessage());
+        }
     }
+
 
     private void sendToPrinter(EposResult result)
     {
         if (_printer != null)
         {
             try {
-                if(result!=null) {
+                if(result!=null && result.DataStr!=null) {
                     Log.d(TAG, "sendToPrinter:"+result.DataStr);
                     //preparePrinter();
                     _printer.init();
@@ -215,7 +215,7 @@ public class DnaService extends Service implements IDnaService, Runnable
                     _printer.fontSet(asciiFontType, fontTypeExtCode);
 
                     String printFIle= result.DataStr.replace("/n","\n");
-                    String printFIle2= printFIle.replace("\r"," ");
+                    String printFIle2= printFIle.replace("\r","");
                     _printer.printStr(printFIle2+"\n"+"\n"+"\n"+"\n", null);
                     _printer.start();
 

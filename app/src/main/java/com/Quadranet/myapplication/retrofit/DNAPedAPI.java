@@ -7,5 +7,5 @@ import retrofit2.http.Query;
 public interface DNAPedAPI {
     @POST("GetPedConnection")
     Call<DNAPedResult> getPedURL(@Query("SerialNumber") String SerialNumber);
-    String BASE_URL = "https://dbxlive.quadranet.co.uk/Interfaces/API/DNAPayments/";
+    String BASE_URL = "https://dbxqa3.quadranet.co.uk/Interfaces/API/DNAPayments/";
 }

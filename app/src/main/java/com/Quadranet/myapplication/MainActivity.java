@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
             });
             Log.d("WebViewer","loading dbx ");
 
-            mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            mywebView.loadUrl("https://dbxqa3.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
             if(clientGuid!=null){
                 _dbxloaded=true;
             }
