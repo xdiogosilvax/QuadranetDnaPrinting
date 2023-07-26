@@ -34,7 +34,7 @@ import com.pax.dal.entity.EFontTypeAscii;
 import com.pax.dal.entity.EFontTypeExtCode;
 import com.pax.dal.exceptions.PrinterDevException;
 import com.pax.neptunelite.api.NeptuneLiteUser;
-import com.quadranet.R;
+import com.quadranetepos.R;
 //import com.quadranet.dbx.R;
 
 import java.net.InetAddress;
@@ -73,6 +73,14 @@ public class MainActivity extends Activity {
             GetPedDetails(serialNumber);
         }
     }
+    @Override
+    public void onBackPressed() {
+        if (mywebView.canGoBack()) {
+            mywebView.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     private void loadWEbViewer(){
         try{
@@ -94,6 +102,7 @@ public class MainActivity extends Activity {
             webSettings.setBuiltInZoomControls(true);
             webSettings.setDisplayZoomControls(false);
             webSettings.setSupportZoom(true);
+
             webSettings.setDefaultTextEncodingName("utf-8");
             Log.d("WebViewer","Finihs Adding Settings");
 
@@ -102,9 +111,10 @@ public class MainActivity extends Activity {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
                     Log.d("WebViewer","Not created ");
-
                     return false;
                 }
+
+
             });
             Log.d("WebViewer","loading dbx ");
 
@@ -190,7 +200,7 @@ public class MainActivity extends Activity {
         builder.setView(image);
         builder.setNeutralButton("Try Again", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dlg, int sumthin) {
-                //GetPedDetails(serialNumber);
+                GetPedDetails(serialNumber);
             }
         });
 

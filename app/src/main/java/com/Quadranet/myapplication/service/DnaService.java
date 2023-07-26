@@ -23,7 +23,7 @@ import com.pax.dal.IPrinter;
 import com.pax.dal.entity.EFontTypeAscii;
 import com.pax.dal.entity.EFontTypeExtCode;
 import com.pax.neptunelite.api.NeptuneLiteUser;
-import com.quadranet.R;
+import com.quadranetepos.R;
 //import com.quadranet.dbx.R;
 
 import java.time.LocalDateTime;
