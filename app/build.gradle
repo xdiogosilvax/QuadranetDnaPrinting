@@ -8,9 +8,9 @@ android {
 
     signingConfigs {
         qdn{
-            keyAlias 'quadranetappkey'
+            keyAlias 'quadranetepos'
             keyPassword 'w3h4t3p0mp3y'
-            storeFile file("C:/dev/quadranetapp.jks")
+            storeFile file('C:\\Users\\Diogo\\AndroidStudioProjects\\MyApplication3\\keystore\\quadranetepos.keystore')
             storePassword 'w3h4t3p0mp3y'
         }
     }
