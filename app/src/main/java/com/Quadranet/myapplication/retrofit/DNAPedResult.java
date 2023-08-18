@@ -14,6 +14,11 @@ public class DNAPedResult {
     @SerializedName("url")
     @Expose
     public String url;
+    @SerializedName("use_webpos")
+    @Expose
+    public Integer use_webpos;
+
+
 }
 
 

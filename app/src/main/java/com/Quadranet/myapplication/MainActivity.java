@@ -37,6 +37,7 @@ import com.pax.neptunelite.api.NeptuneLiteUser;
 import com.quadranetepos.R;
 //import com.quadranet.dbx.R;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.time.LocalDateTime;
@@ -118,7 +119,8 @@ public class MainActivity extends Activity {
             });
             Log.d("WebViewer","loading dbx ");
 
-            mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
             if(clientGuid!=null){
                 _dbxloaded=true;
             }
@@ -136,14 +138,32 @@ public class MainActivity extends Activity {
             if(clientGuid!=null) {
                 return;
             }
-            Call<DNAPedResult> call = RetroFitClient.getInstance().getMyApi().getPedURL(serialNumber);
+            Call<DNAPedResult> call = RetroFitClient.getInstance().getMyApi().getPedURL(serialNumber,ipAddress);
+            //if(call==null) showError();
             call.enqueue(new Callback<DNAPedResult>() {
             @Override
             public void onResponse(Call<DNAPedResult> call, Response<DNAPedResult> response) {
                 DNAPedResult PedDetails = response.body();
+
+                if(PedDetails==null) {
+                    showError();
+                    return;
+                }
+
+
                 if(PedDetails.success){
                     clientGuid=PedDetails.url;
+                }
+                else{
+                    showError();
+                }
+
+                if(PedDetails.use_webpos==2){
                     loadWEbViewer();
+                }
+                else if(PedDetails.success && PedDetails.use_webpos!=2)
+                {
+                    showClosePopUp(PedDetails.use_webpos);
                 }
                 else
                 {
@@ -165,6 +185,38 @@ public class MainActivity extends Activity {
 
         }
     }
+
+    private void showClosePopUp(int choice)
+    {
+        ImageView image = new ImageView(this);
+        //image.setImageResource(R.drawable.hellodiogo);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.hellodiogo);
+
+        builder.setTitle("Terminal Config Complete");
+
+        if(choice==1){
+
+            builder.setNegativeButton("Load POS", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dlg, int sumthin) {
+                    loadWEbViewer();
+                }
+            });
+        }
+
+        builder.setNeutralButton("CLOSE", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dlg, int sumthin) {
+                // Close the current activity
+                finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+    }
+
+
     private void showError()
     {
         ImageView image = new ImageView(this);
@@ -190,12 +242,16 @@ public class MainActivity extends Activity {
         cSpan.setSpan(new StyleSpan(Typeface.NORMAL), 0, cSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         sbuilder.append(cSpan);
 
+        SpannableString eSpan = new SpannableString("IpAddress: "+ ipAddress +" \n");
+        eSpan.setSpan(new StyleSpan(Typeface.NORMAL), 0, eSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sbuilder.append(eSpan);
         //sbuilder.append(message.substring("Your device requires to be set u".length()));
 
         sbuilder.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, phoneSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         sbuilder.setSpan(new StyleSpan(Typeface.NORMAL), 0, aSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         sbuilder.setSpan(new StyleSpan(Typeface.NORMAL), 0, bSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         sbuilder.setSpan(new StyleSpan(Typeface.NORMAL), 0, cSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sbuilder.setSpan(new StyleSpan(Typeface.NORMAL), 0, eSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.setMessage(sbuilder);
         builder.setView(image);
         builder.setNeutralButton("Try Again", new DialogInterface.OnClickListener() {
@@ -277,13 +333,11 @@ public class MainActivity extends Activity {
         try {
             List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
             for (NetworkInterface intf : interfaces) {
-                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
-                for (InetAddress addr : addrs) {
-                    if (!addr.isLoopbackAddress()) {
-                        String sAddr = addr.getHostAddress();
-                        boolean isIPv4 = sAddr.indexOf(':') < 0;
-                        if (isIPv4) {
-                            return sAddr;
+                if (intf.getName().equalsIgnoreCase("wlan0") || intf.getName().equalsIgnoreCase("wlan1")) {
+                    List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                    for (InetAddress addr : addrs) {
+                        if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
+                            return addr.getHostAddress();
                         }
                     }
                 }
@@ -291,6 +345,7 @@ public class MainActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return "";
     }
 
