@@ -119,8 +119,8 @@ public class MainActivity extends Activity {
             });
             Log.d("WebViewer","loading dbx ");
 
-            //mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
-            mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
             if(clientGuid!=null){
                 _dbxloaded=true;
             }
@@ -254,9 +254,16 @@ public class MainActivity extends Activity {
         sbuilder.setSpan(new StyleSpan(Typeface.NORMAL), 0, eSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.setMessage(sbuilder);
         builder.setView(image);
-        builder.setNeutralButton("Try Again", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Try Again", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dlg, int sumthin) {
                 GetPedDetails(serialNumber);
+            }
+        });
+
+        builder.setNeutralButton("CLOSE", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dlg, int sumthin) {
+                // Close the current activity
+                finish();
             }
         });
 

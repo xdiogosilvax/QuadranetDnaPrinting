@@ -8,6 +8,6 @@ public interface DNAPedAPI {
     @POST("GetPedConnection")
     Call<DNAPedResult> getPedURL(@Query("SerialNumber") String SerialNumber, @Query("IpAddress") String IpAddress);
 
-    //String BASE_URL = "https://dbxlive.quadranet.co.uk/Interfaces/API/DNAPayments/";
-    String BASE_URL = "https://dbxdev.quadranet.co.uk/Interfaces/API/DNAPayments/";
+    String BASE_URL = "https://dbxlive.quadranet.co.uk/Interfaces/API/DNAPayments/";
+    //String BASE_URL = "https://dbxdev.quadranet.co.uk/Interfaces/API/DNAPayments/";
 }
