@@ -119,8 +119,9 @@ public class MainActivity extends Activity {
             });
             Log.d("WebViewer","loading dbx ");
 
-            mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
-            //mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("http://qsllp016:888/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            mywebView.loadUrl("http://192.168.8.181:999/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
             if(clientGuid!=null){
                 _dbxloaded=true;
             }
