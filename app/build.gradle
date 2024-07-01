@@ -8,9 +8,9 @@ android {
 
     signingConfigs {
         qdn{
-            keyAlias 'key0'
+            keyAlias 'QuadKeys'
             keyPassword 'w3h4t3p0mp3y'
-            storeFile file('C:\\Users\\Diogo\\AndroidStudioProjects\\MyApplication3\\keystore\\quadranetepos.jks')
+            storeFile file('C:\\dev\\QuadAndroidKey.jks')
             storePassword 'w3h4t3p0mp3y'
             v2SigningEnabled false
         }
@@ -19,8 +19,8 @@ android {
         applicationId "com.quadranetepos"
         minSdk 26
         targetSdk 33
-        versionCode 5
-        versionName "5.0"
+        versionCode 6
+        versionName "6.0"
         ndk {
             abiFilters 'armeabi'
         }
@@ -44,12 +44,12 @@ android {
         }
         buildTypes {
             release {
-                debuggable false
+                debuggable true
                 minifyEnabled false
                 signingConfig signingConfigs.qdn
             }
             debug {
-                debuggable false
+                debuggable true
                 signingConfig signingConfigs.qdn
             }
 

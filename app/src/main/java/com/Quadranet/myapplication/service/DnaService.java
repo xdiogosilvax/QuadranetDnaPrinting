@@ -169,37 +169,37 @@ public class DnaService extends Service implements IDnaService, Runnable
      */
     private void doJob() {
 
-//        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-//        Log.d(TAG, "start doJob:" + time);
-//        _isRunning=true;
-//
-//        Call<EposResult> call = _retroService.callEpos(_pedSN);
-//        try
-//        {
-//            Response<EposResult> response = call.execute();
-//
-//            EposResult result = response.body();
-//
-//            if (result != null)
-//            {
-//                Log.d(TAG, "doJob-result: "+result.DataStr);
-//                sendToPrinter(result);
-//                result=null;
-//            }
-//            else
-//            {
-//                Log.d(TAG, "doJob response is null");
-//            }
-//
-//            //http 400 error // request url is in ServiceGenerator.API_BASE_URL
-//            Log.d(TAG, "doJob response: " + response.toString());
-//        }
-//        catch (Exception e)
-//        {
-//            Log.d(TAG, "doJob exception: " + e.getMessage());
-//        }
-//    }
+        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        Log.d(TAG, "start doJob:" + time);
+        _isRunning=true;
+
+        Call<EposResult> call = _retroService.callEpos(_pedSN);
+        try
+        {
+            Response<EposResult> response = call.execute();
+
+            EposResult result = response.body();
+
+            if (result != null)
+            {
+                Log.d(TAG, "doJob-result: "+result.DataStr);
+                sendToPrinter(result);
+                result=null;
+            }
+            else
+            {
+                Log.d(TAG, "doJob response is null");
+            }
+
+            //http 400 error // request url is in ServiceGenerator.API_BASE_URL
+            Log.d(TAG, "doJob response: " + response.toString());
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG, "doJob exception: " + e.getMessage());
+        }
     }
+
 
     private void sendToPrinter(EposResult result)
     {
@@ -259,7 +259,7 @@ public class DnaService extends Service implements IDnaService, Runnable
     public Call<PedConnection> getPedConnection(String serialNumber) {
         // Create a Retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://dbxqa3.quadranet.co.uk/Interfaces/API/DNAPayments/")
+                .baseUrl("http://qsl-lap103:888/Interfaces/API/DNAPayments/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

@@ -17,7 +17,9 @@ public class DNAPedResult {
     @SerializedName("use_webpos")
     @Expose
     public Integer use_webpos;
-
+    @SerializedName("ped_name")
+    @Expose
+    public String ped_name;
 
 }
 

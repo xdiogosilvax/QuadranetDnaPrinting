@@ -17,7 +17,13 @@ public class ServiceGenerator {
 
     //http add urlacl url=https://+:44317/ user=everyone
 
-    public static final String API_BASE_URL = "https://dbxqa3.quadranet.co.uk/Interfaces/API/DNAPayments/"; //insert_ip_here
+    //public static final String API_BASE_URL = "https://dbxqa3.quadranet.co.uk/Interfaces/API/DNAPayments/"; //insert_ip_here
+    public static final String API_BASE_URL = "https://dbxdemo.quadranet.co.uk/Interfaces/API/DNAPayments/"; //insert_ip_here
+    //public static final String API_BASE_URL = "https://dbxdev.quadranet.co.uk/Interfaces/API/DNAPayments/"; //insert_ip_here
+    //public static final String API_BASE_URL = "http://qsllp016:888/Interfaces/API/DNAPayments/"; //insert_ip_here
+    //public static final String API_BASE_URL = "http://qsllp016:999/Interfaces/API/DNAPayments/"; //insert_ip_here
+    //public static final String API_BASE_URL = "http://qsl-lap103:888/Interfaces/API/DNAPayments/"; //insert_ip_here
+
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 

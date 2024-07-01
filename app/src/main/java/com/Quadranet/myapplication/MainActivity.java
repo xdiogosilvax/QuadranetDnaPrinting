@@ -16,11 +16,14 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button;
 
 import com.Quadranet.myapplication.retrofit.DNAPedAPI;
 import com.Quadranet.myapplication.retrofit.DNAPedResult;
@@ -36,6 +39,8 @@ import com.pax.dal.exceptions.PrinterDevException;
 import com.pax.neptunelite.api.NeptuneLiteUser;
 import com.quadranetepos.R;
 //import com.quadranet.dbx.R;
+
+import org.w3c.dom.Text;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -58,6 +63,7 @@ public class MainActivity extends Activity {
     private String serialNumber;
     private String ipAddress;
     private boolean _dbxloaded;
+    private TextView textView;
 
     protected void onCreate(Bundle savedInstanceState) {
         _dbxloaded=false;
@@ -70,6 +76,15 @@ public class MainActivity extends Activity {
 
         //tryPrinter();
 
+        //Text text= findViewById(R.id.);
+
+        Button minimizeButton = findViewById(R.id.minimizeButton);
+        minimizeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveTaskToBack(true);
+            }
+        });
         if(clientGuid== null){
             GetPedDetails(serialNumber);
         }
@@ -91,6 +106,8 @@ public class MainActivity extends Activity {
             }
 
             mywebView=(WebView) findViewById(R.id.webview);
+            if(ipAddress==null || ipAddress=="")
+                ipAddress =getIPAddress();
 
             WebSettings webSettings=mywebView.getSettings();
             Log.d("WebViewer","GotIN");
@@ -120,8 +137,14 @@ public class MainActivity extends Activity {
             Log.d("WebViewer","loading dbx ");
 
             //mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
-            //mywebView.loadUrl("http://qsllp016:888/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
-            mywebView.loadUrl("http://192.168.8.181:999/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            mywebView.loadUrl("https://dbxdemo.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+           //mywebView.loadUrl("http://qsllp016:888/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+           //mywebView.loadUrl("http://qsllp016:999/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("http://192.168.8.181:999/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("http://qsl-lap103:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+
+
             if(clientGuid!=null){
                 _dbxloaded=true;
             }
@@ -140,7 +163,7 @@ public class MainActivity extends Activity {
                 return;
             }
             Call<DNAPedResult> call = RetroFitClient.getInstance().getMyApi().getPedURL(serialNumber,ipAddress);
-            //if(call==null) showError();
+            //if(call==null) showErrorNoInternet();
             call.enqueue(new Callback<DNAPedResult>() {
             @Override
             public void onResponse(Call<DNAPedResult> call, Response<DNAPedResult> response) {
@@ -170,12 +193,18 @@ public class MainActivity extends Activity {
                 {
                  showError();
                 }
-
+                if(PedDetails.ped_name!=null)
+                {
+                    textView = findViewById(R.id.textView);
+                    textView.setText(PedDetails.ped_name);
+                }
             }
 
             @Override
             public void onFailure(Call<DNAPedResult> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "An error has occured", Toast.LENGTH_LONG).show();
+                showErrorNoInternet();
+
             }
 
         });
@@ -183,6 +212,7 @@ public class MainActivity extends Activity {
         catch (Exception ex)
         {
             Toast.makeText(getApplicationContext(), "Fatal calling API", Toast.LENGTH_LONG).show();
+            showErrorNoInternet();
 
         }
     }
@@ -217,7 +247,42 @@ public class MainActivity extends Activity {
 
     }
 
+    private void showErrorNoInternet()
+    {
+        ImageView image = new ImageView(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.hellodiogo);
 
+        builder.setTitle("No Network Connection");
+
+        SpannableStringBuilder sbuilder = new SpannableStringBuilder();
+        SpannableString phoneSpan = new SpannableString("Please check your wifi connection on this device. If problems persist, please contact your network provider or IT department.");
+        phoneSpan.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, phoneSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+// Use phoneSpan's length for setting the span
+        sbuilder.append(phoneSpan);
+        sbuilder.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, phoneSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setMessage(sbuilder);
+        builder.setView(image);
+        builder.setNegativeButton("Try Again", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dlg, int sumthin) {
+                GetPedDetails(serialNumber);
+            }
+        });
+
+        builder.setNeutralButton("CLOSE", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dlg, int sumthin) {
+                // Close the current activity
+                finish();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+
+    }
     private void showError()
     {
         ImageView image = new ImageView(this);
