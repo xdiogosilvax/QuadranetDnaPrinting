@@ -8,9 +8,9 @@ android {
 
     signingConfigs {
         qdn{
-            keyAlias 'QuadKeys'
+            keyAlias 'key0'
             keyPassword 'w3h4t3p0mp3y'
-            storeFile file('C:\\dev\\QuadAndroidKey.jks')
+            storeFile file('C:\\Users\\silvad\\StudioProjects\\QuadranetDnaPrinting\\keystore\\quadranetepos.jks')
             storePassword 'w3h4t3p0mp3y'
             v2SigningEnabled false
         }

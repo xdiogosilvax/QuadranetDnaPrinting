@@ -1,5 +1,6 @@
 package com.Quadranet.myapplication;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -7,10 +8,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -64,19 +69,42 @@ public class MainActivity extends Activity {
     private String ipAddress;
     private boolean _dbxloaded;
     private TextView textView;
+    private static final int REQUEST_CODE_READ_PHONE_STATE = 1;
 
     protected void onCreate(Bundle savedInstanceState) {
-        _dbxloaded=false;
-        serialNumber = getSerialNumber();
-        ipAddress =getIPAddress();
-
+        _dbxloaded = false;
+        serialNumber = "Failed to get Serial Number";
+        ipAddress = getIPAddress();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //tryPrinter();
-
-        //Text text= findViewById(R.id.);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // Check if permission is already granted
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // Show permission explanation and request permission
+                showPermissionExplanation();
+            } else {
+                // Permission already granted, get the serial number
+                String sn = getSerialNumber(this);
+                if (sn != null) {
+                    serialNumber = sn;
+                }
+                if (clientGuid == null) {
+                    GetPedDetails(serialNumber);
+                }
+            }
+        } else {
+            // For Android versions below 10, get the serial number directly
+            String sn = getSerialNumber(this);
+            if (sn != null) {
+                serialNumber = sn;
+            }
+            if (clientGuid == null) {
+                GetPedDetails(serialNumber);
+            }
+        }
 
         Button minimizeButton = findViewById(R.id.minimizeButton);
         minimizeButton.setOnClickListener(new View.OnClickListener() {
@@ -85,16 +113,45 @@ public class MainActivity extends Activity {
                 moveTaskToBack(true);
             }
         });
-        if(clientGuid== null){
-            GetPedDetails(serialNumber);
-        }
     }
+
+
     @Override
     public void onBackPressed() {
         if (mywebView.canGoBack()) {
             mywebView.goBack();
         } else {
             super.onBackPressed();
+        }
+    }
+    private void showPermissionExplanation() {
+        new AlertDialog.Builder(this)
+                .setTitle("Permission Needed")
+                .setMessage("This app needs the Phone State permission to access the device's serial number.")
+                .setPositiveButton("OK", (dialog, which) -> ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.READ_PHONE_STATE},
+                        REQUEST_CODE_READ_PHONE_STATE))
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_READ_PHONE_STATE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, get the serial number
+                String sn = getSerialNumber(this);
+                if (sn != null) {
+                    serialNumber = sn;
+                }
+                GetPedDetails(serialNumber);
+            } else {
+                // Permission denied, handle accordingly
+                // Inform the user why the permission is necessary
+            }
         }
     }
 
@@ -137,9 +194,9 @@ public class MainActivity extends Activity {
             Log.d("WebViewer","loading dbx ");
 
             //mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
-            mywebView.loadUrl("https://dbxdemo.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
-            //mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
-           //mywebView.loadUrl("http://qsllp016:888/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("https://dbxdemo.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+           //mywebView.loadUrl("http://qsllp016:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
            //mywebView.loadUrl("http://qsllp016:999/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
             //mywebView.loadUrl("http://192.168.8.181:999/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
             //mywebView.loadUrl("http://qsl-lap103:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
@@ -397,9 +454,34 @@ public class MainActivity extends Activity {
     };
 
     // Get the device's serial number
-    public static String getSerialNumber() {
-        return Build.SERIAL;
+    //public static String getSerialNumber() {
+    //   return Build.SERIAL;
+    //}
+
+    public static String getSerialNumber(Context context) {
+        String serial = null;
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 10 and above
+                serial = Build.getSerial();
+            }
+            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+                    serial = Build.SERIAL;
+                }
+            else {
+                // Below Android 8
+                serial = Build.SERIAL;
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+        return serial;
     }
+
+
 
     // Get the device's IP address
     public static String getIPAddress() {
