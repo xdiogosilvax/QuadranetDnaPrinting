@@ -230,7 +230,26 @@ public class DnaService extends Service implements IDnaService, Runnable
         }
     }
     public static String getSerialNumber() {
-        return Build.SERIAL;
+        String serial = null;
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 10 and above
+                serial = Build.getSerial();
+            }
+            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+                serial = Build.SERIAL;
+            }
+            else {
+                // Below Android 8
+                serial = Build.SERIAL;
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+        return serial;
     }
 
     private void preparePrinter()
