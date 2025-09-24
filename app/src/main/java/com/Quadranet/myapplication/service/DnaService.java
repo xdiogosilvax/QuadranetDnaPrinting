@@ -278,7 +278,7 @@ public class DnaService extends Service implements IDnaService, Runnable
     public Call<PedConnection> getPedConnection(String serialNumber) {
         // Create a Retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://qsl-lap103:888/Interfaces/API/DNAPayments/")
+                .baseUrl("http://192.168.0.20:888/Interfaces/API/DNAPayments/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

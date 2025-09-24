@@ -85,14 +85,15 @@ public class MainActivity extends Activity {
                     != PackageManager.PERMISSION_GRANTED) {
                 // Show permission explanation and request permission
                 showPermissionExplanation();
-            } else {
+            }
+            else {
                 // Permission already granted, get the serial number
                 String sn = getSerialNumber(this);
                 if (sn != null) {
                     serialNumber = sn;
                 }
                 if (clientGuid == null) {
-                    GetPedDetails(serialNumber);
+                    //GetPedDetails(serialNumber);
                 }
             }
         } else {
@@ -102,9 +103,10 @@ public class MainActivity extends Activity {
                 serialNumber = sn;
             }
             if (clientGuid == null) {
-                GetPedDetails(serialNumber);
+               // GetPedDetails(serialNumber);
             }
         }
+        loadWEbViewer();
 
         Button minimizeButton = findViewById(R.id.minimizeButton);
         minimizeButton.setOnClickListener(new View.OnClickListener() {
@@ -168,6 +170,8 @@ public class MainActivity extends Activity {
 
             WebSettings webSettings=mywebView.getSettings();
             Log.d("WebViewer","GotIN");
+            webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE); // or LOAD_CACHE_ELSE_NETWORK
+            WebView.setWebContentsDebuggingEnabled(true);
             webSettings.setJavaScriptEnabled(true);
             webSettings.setAllowContentAccess(true);
             webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
@@ -193,13 +197,18 @@ public class MainActivity extends Activity {
             });
             Log.d("WebViewer","loading dbx ");
 
-            //mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+           // mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid); //+"/P/"+ipAddress+"/"+serialNumber);
             //mywebView.loadUrl("https://dbxdemo.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
-            mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+           // mywebView.loadUrl("http://192.168.1.105:80/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
            //mywebView.loadUrl("http://qsllp016:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
            //mywebView.loadUrl("http://qsllp016:999/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
             //mywebView.loadUrl("http://192.168.8.181:999/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
-            //mywebView.loadUrl("http://qsl-lap103:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("http://qsl-lap104:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("http://192.168.0.20:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            //mywebView.loadUrl("http://172.20.10.2:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            mywebView.loadUrl("http://192.168.18.8/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+
 
 
             if(clientGuid!=null){

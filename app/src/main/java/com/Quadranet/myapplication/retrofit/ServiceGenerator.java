@@ -19,10 +19,15 @@ public class ServiceGenerator {
 
     //public static final String API_BASE_URL = "https://dbxqa3.quadranet.co.uk/Interfaces/API/DNAPayments/"; //insert_ip_here
    // public static final String API_BASE_URL = "https://dbxdemo.quadranet.co.uk/Interfaces/API/DNAPayments/"; //insert_ip_here
-    public static final String API_BASE_URL = "https://dbxdev.quadranet.co.uk/Interfaces/API/DNAPayments/"; //insert_ip_here
+  //  public static final String API_BASE_URL = "https://dbxdev.quadranet.co.uk/Interfaces/API/DNAPayments/"; //insert_ip_here
+    //public static final String API_BASE_URL = "https://dbxlive.quadranet.co.uk/Interfaces/API/DNAPayments/"; //insert_ip_here
     //public static final String API_BASE_URL = "http://qsllp016:888/Interfaces/API/DNAPayments/"; //insert_ip_here
     //public static final String API_BASE_URL = "http://qsllp016:999/Interfaces/API/DNAPayments/"; //insert_ip_here
-    //public static final String API_BASE_URL = "http://qsl-lap103:888/Interfaces/API/DNAPayments/"; //insert_ip_here
+    //public static final String API_BASE_URL = "http://qsl-lap104:888/Interfaces/API/DNAPayments/"; //insert_ip_her
+    //public static final String API_BASE_URL = "http://192.168.0.20:888/Interfaces/API/DNAPayments/"; //insert_ip_her
+    //public static final String API_BASE_URL = "http://172.20.10.2:888/Interfaces/API/DNAPayments/"; //insert_ip_her
+    //public static final String API_BASE_URL = "http://192.168.1.105:80/Interfaces/API/DNAPayments/"; //insert_ip_her
+    public static final String API_BASE_URL = "http://192.168.18.8/Interfaces/API/DNAPayments/"; //insert_ip_her
 
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();

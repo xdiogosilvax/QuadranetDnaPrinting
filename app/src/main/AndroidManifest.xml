@@ -24,7 +24,10 @@
         android:icon="@drawable/hellodiogo"
         android:label="Quadranet Pos"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.MyApplication">
+
+
         <activity
             android:name="com.Quadranet.myapplication.MainActivity"
             android:exported="true">
@@ -36,5 +39,6 @@
         </activity>
         <service android:name="com.Quadranet.myapplication.service.DnaService" android:exported="false"/>
     </application>
+
 
 </manifest>
