@@ -93,7 +93,7 @@ public class MainActivity extends Activity {
                     serialNumber = sn;
                 }
                 if (clientGuid == null) {
-                    //GetPedDetails(serialNumber);
+                    GetPedDetails(serialNumber);
                 }
             }
         } else {
@@ -103,7 +103,7 @@ public class MainActivity extends Activity {
                 serialNumber = sn;
             }
             if (clientGuid == null) {
-               // GetPedDetails(serialNumber);
+                GetPedDetails(serialNumber);
             }
         }
         loadWEbViewer();

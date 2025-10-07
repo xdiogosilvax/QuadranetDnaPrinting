@@ -19,8 +19,8 @@ android {
         applicationId "com.quadranetepos"
         minSdk 26
         targetSdk 33
-        versionCode 11
-        versionName "6.0-DempseysNew_MH"
+        versionCode 13
+        versionName "6.0_DempseysFix"
         ndk {
             abiFilters 'armeabi'
         }
