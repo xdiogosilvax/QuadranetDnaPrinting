@@ -33,8 +33,8 @@ import android.widget.Button;
 import com.Quadranet.myapplication.retrofit.DNAPedAPI;
 import com.Quadranet.myapplication.retrofit.DNAPedResult;
 import com.Quadranet.myapplication.retrofit.RetroFitClient;
-import com.Quadranet.myapplication.service.DnaService;
-import com.Quadranet.myapplication.service.IDnaService;
+//import com.Quadranet.myapplication.service.DnaService;
+//import com.Quadranet.myapplication.service.IDnaService;
 //import com.example.myapplication.R;
 import com.pax.dal.IDAL;
 import com.pax.dal.IPrinter;
@@ -60,10 +60,11 @@ import retrofit2.Response;
 
 public class MainActivity extends Activity {
 
-    private IDnaService _dnaService; //service to call epos
+  //  private IDnaService _dnaService; //service to call epos
     private DNAPedAPI  _dnaAPI;
     private static IDAL dal;
     private String clientGuid;
+    private String DBXURl;
     private WebView mywebView;
     private String serialNumber;
     private String ipAddress;
@@ -85,9 +86,8 @@ public class MainActivity extends Activity {
                     != PackageManager.PERMISSION_GRANTED) {
                 // Show permission explanation and request permission
                 showPermissionExplanation();
-            }
-            else {
-                // Permission already granted, get the serial number
+
+
                 String sn = getSerialNumber(this);
                 if (sn != null) {
                     serialNumber = sn;
@@ -96,7 +96,8 @@ public class MainActivity extends Activity {
                     GetPedDetails(serialNumber);
                 }
             }
-        } else {
+        }
+        else {
             // For Android versions below 10, get the serial number directly
             String sn = getSerialNumber(this);
             if (sn != null) {
@@ -197,8 +198,7 @@ public class MainActivity extends Activity {
             });
             Log.d("WebViewer","loading dbx ");
 
-           // mywebView.loadUrl("https://dbxlive.quadranet.co.uk/Login/"+clientGuid); //+"/P/"+ipAddress+"/"+serialNumber);
-            //mywebView.loadUrl("https://dbxdemo.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+           //mywebView.loadUrl("https://dbxdemo.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
            // mywebView.loadUrl("http://192.168.1.105:80/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
             //mywebView.loadUrl("https://dbxdev.quadranet.co.uk/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
            //mywebView.loadUrl("http://qsllp016:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
             //mywebView.loadUrl("http://qsl-lap104:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
             //mywebView.loadUrl("http://192.168.0.20:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
             //mywebView.loadUrl("http://172.20.10.2:888/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
-            mywebView.loadUrl("http://192.168.18.8/Login/"+clientGuid+"/P/"+ipAddress+"/"+serialNumber);
+            mywebView.loadUrl(DBXURl+"/P/"+ipAddress+"/"+serialNumber);
 
 
 
@@ -228,7 +228,7 @@ public class MainActivity extends Activity {
             if(clientGuid!=null) {
                 return;
             }
-            Call<DNAPedResult> call = RetroFitClient.getInstance().getMyApi().getPedURL(serialNumber,ipAddress);
+            Call<DNAPedResult> call = RetroFitClient.getInstance().getMyApi().GetDBXURLForPed(serialNumber);
             //if(call==null) showErrorNoInternet();
             call.enqueue(new Callback<DNAPedResult>() {
             @Override
@@ -242,7 +242,7 @@ public class MainActivity extends Activity {
 
 
                 if(PedDetails.success){
-                    clientGuid=PedDetails.url;
+                    DBXURl=PedDetails.url;
                 }
                 else{
                     showError();
@@ -435,32 +435,32 @@ public class MainActivity extends Activity {
         super.onStart();
 
         //connect to service
-        Intent serviceIntent = new Intent(this, DnaService.class);
-        startService(serviceIntent);
-        bindService(serviceIntent, _serviceConnection, Context.BIND_AUTO_CREATE);
+       // Intent serviceIntent = new Intent(this, DnaService.class);
+        //startService(serviceIntent);
+        //bindService(serviceIntent, _serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
 
-        if (_serviceConnection != null)
-        {
-            unbindService(_serviceConnection);
-        }
+        //if (_serviceConnection != null)
+        //{
+        //    unbindService(_serviceConnection);
+        //}
 
         super.onStop();
     }
 
-    private ServiceConnection _serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            _dnaService = ((DnaService.DnaServiceBinder) service).getService();
-        }
+  //  private ServiceConnection _serviceConnection = new ServiceConnection() {
+  //      @Override
+  //      public void onServiceConnected(ComponentName name, IBinder service) {
+   //         _dnaService = ((DnaService.DnaServiceBinder) service).getService();
+  //      }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
+  //      @Override
+  //      public void onServiceDisconnected(ComponentName name) {
+  //      }
+  //  };
 
     // Get the device's serial number
     //public static String getSerialNumber() {

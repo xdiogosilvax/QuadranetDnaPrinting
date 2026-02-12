@@ -67,11 +67,11 @@ public class DnaService extends Service implements IDnaService, Runnable
     @Override
     public void onCreate() {
         super.onCreate();
-        _pedSN=getSerialNumber();
-        _notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        startForeground(NOTIFICATION_ID, createNotification());
-        preparePrinter(); //I don't have a printer, so I commented this out
-        startThread();
+        //_pedSN=getSerialNumber();
+        //_notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        //startForeground(NOTIFICATION_ID, createNotification());
+        //preparePrinter(); //I don't have a printer, so I commented this out
+        //startThread();
     }
 
 //    @Override
@@ -119,19 +119,19 @@ public class DnaService extends Service implements IDnaService, Runnable
     @Override
     public synchronized void run()
     {
-        try
-        {
-            while (_stopThread != true)
-            {
-                if(_isRunning) return;
-                doJob();
-                _isRunning=false;
-                wait(CHECK_INTERVAL);
-            }
-        }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+       // try
+       // {
+          //  while (_stopThread != true)
+          //  {
+               // if(_isRunning) return;
+              //  doJob();
+              //  _isRunning=false;
+               // wait(CHECK_INTERVAL);
+         //   }
+      //  }
+      //  catch (InterruptedException e) {
+       //     e.printStackTrace();
+      //  }
     }
 
     private Notification createNotification()
